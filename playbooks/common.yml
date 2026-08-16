@@ -1,7 +1,9 @@
 ---
-- name: update web, nfs and db servers
-  hosts: webservers, nfs, db
+- name: update web, nfs 
+  hosts: webservers, nfs
+  remote_user: ec2-user
   become: yes
+  becomme_user: root
   tasks:
     - name: ensure wireshark is at the latest version
       yum:
@@ -10,8 +12,10 @@
    
 
 - name: update LB server
-  hosts: lb
+  hosts: lb ,db
+  remote_user: ubuntu
   become: yes
+  become_user: root
   tasks:
     - name: Update apt repo
       apt: 
