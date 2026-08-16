@@ -35,6 +35,6 @@
 
     - name: Ensure /tmp/test/test file exists (empty)
       ansible.builtin.file:
-        path: /tmp/test3
+        path: /tmp/test4
         state: touch
         mode: '0644'
