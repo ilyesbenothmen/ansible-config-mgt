@@ -4,6 +4,8 @@
   remote_user: ec2-user
   become: yes
   become_user: root
+  vars:
+    ansible_python_interpreter: /usr/bin/python3.9
   tasks:
     - name: delete wireshark
       yum:
