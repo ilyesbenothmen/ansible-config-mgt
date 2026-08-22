@@ -8,9 +8,10 @@
     ansible_python_interpreter: /usr/bin/python3.9
   tasks:
     - name: delete wireshark
-      yum:
+      ansible.builtin.dnf:
         name: wireshark
-        state: removed
+        state: absent
+      register: dnf_output
 
 - name: update LB server
   hosts: lb
