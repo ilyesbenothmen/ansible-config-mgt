@@ -1,6 +1,6 @@
 ---
-- name: update web, nfs and db servers
-  hosts: webservers, nfs, db
+- name: update web, nfs  servers
+  hosts: webservers,nfs
   remote_user: ec2-user
   become: yes
   become_user: root
@@ -8,13 +8,13 @@
     ansible_python_interpreter: /usr/bin/python3.9
   tasks:
     - name: delete wireshark
-      ansible.builtin.dnf:
+      yum:
         name: wireshark
-        state: absent
-      register: dnf_output
+        state: removed
+      when: ansible_os_family == "RedHat"
 
-- name: update LB server
-  hosts: lb
+- name: update LB and DB server
+  hosts: db,lb
   remote_user: ubuntu
   become: yes
   become_user: root
@@ -26,3 +26,4 @@
         autoremove: yes
         purge: yes
         autoclean: yes
+      when: ansible_os_family == "Debian"
