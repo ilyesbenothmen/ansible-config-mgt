@@ -3,15 +3,14 @@
   hosts: webservers, nfs
   remote_user: ec2-user
   become: yes
-  become_user: root
   vars:
-    ansible_python_interpreter: /usr/bin/python3.7
+    ansible_python_interpreter: /usr/bin/python3.9
+  become_user: root
   tasks:
     - name: ensure wireshark is at the latest version
-      yum:
-        name: wireshark
-        state: latest
-   
+      ansible.builtin.command: dnf install -y wireshark
+      register: dnf_output
+      changed_when: "'Nothing to do' not in dnf_output.stdout"
 
 - name: update LB server
   hosts: lb ,db
