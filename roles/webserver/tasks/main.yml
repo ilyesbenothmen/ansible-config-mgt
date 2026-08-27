@@ -27,7 +27,6 @@
 - name: clone a repo
   become_user: ec2-user
   become: true
-  become_user: ec2-user
   ansible.builtin.git:
     repo: git@github.com:ilyesbenothmen/tooling.git
     dest: /var/www/html
