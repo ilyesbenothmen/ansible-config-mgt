@@ -22,6 +22,8 @@
   ansible.builtin.git:
     repo: git@github.com:ilyesbenothmen/tooling.git
     dest: /var/www/html
+    key_file: /home/ec2-user/.ssh/id_ed25519
+    accept_hostkey: false  
     force: yes
 
 - name: copy html content to one level up
