@@ -1,0 +1,24 @@
+---
+- name: Add github.com to known_hosts on UAT webservers
+  hosts: uat-webservers
+  become: true
+  vars:
+    remote_user_home: /home/ec2-user
+    remote_user: ec2-user
+
+  tasks:
+    - name: Ensure .ssh directory exists
+      ansible.builtin.file:
+        path: "{{ remote_user_home }}/.ssh"
+        state: directory
+        mode: "0700"
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+
+    - name: Add github.com to known_hosts
+      ansible.builtin.known_hosts:
+        name: github.com
+        key: "{{ lookup('pipe', 'ssh-keyscan -t rsa,ecdsa,ed25519 github.com 2>/dev/null') }}"
+        path: "{{ remote_user_home }}/.ssh/known_hosts"
+        state: present
+      become_user: "{{ remote_user }}"
