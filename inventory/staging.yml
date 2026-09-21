@@ -1,0 +1,2 @@
+[database]
+testmysql ansible_host=172.31.72.41 ansible_user=ubuntu
