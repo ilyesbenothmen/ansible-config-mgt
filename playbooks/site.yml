@@ -1,20 +1,19 @@
 ---
-- hosts: all
-- name: Include dynamic variables 
+- name: Include dynamic variables
+  hosts: all
+  become: true
+ 
   tasks:
-  import_playbook: ../static-assignments/common.yml 
-  include: ../dynamic-assignments/env-vars.yml
-  tags:
-    - always
+    - name: Include common playbook and dynamic environment variables
+      include_tasks: ../dynamic-assignments/env-vars.yml
+      tags:
+        - always
 
--  hosts: webservers
-- name: Webserver assignment
-  import_playbook: ../static-assignments/webservers.yml
-#- hosts: all
-#- import_playbook: ../static-assignments/common-del.yml
+- name: Import common configuration
+  ansible.builtin.import_playbook: ../static-assignments/common.yml
 
-- hosts: uat-webservers
-- import_playbook: ../static-assignments/uat-webservers.yml
+- name: Import UAT webserver configuration 
+  import_playbook: ../static-assignments/uat-webservers.yml
 
 # Set up MySQL on database servers
 - name: Set up MySQL
@@ -24,6 +23,5 @@
     - mysql
 
 - name: Loadbalancers assignment
-  hosts: lb
-- import_playbook: ../static-assignments/loadbalancers.yml
+  import_playbook: ../static-assignments/loadbalancers.yml
   when: load_balancer_is_required 
