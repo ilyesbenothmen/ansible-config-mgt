@@ -22,3 +22,8 @@
   become: true
   roles:
     - mysql
+
+- name: Loadbalancers assignment
+  hosts: lb
+- import_playbook: ../static-assignments/loadbalancers.yml
+  when: load_balancer_is_required 
