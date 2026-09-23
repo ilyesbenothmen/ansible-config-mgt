@@ -1,11 +1,16 @@
 ---
 - name: Include dynamic variables
-  import_playbook: ../dynamic-assignments/env-vars.yml
-  tags:
-    - always
+  hosts: all
+  become: true
+ 
+  tasks:
+    - name: Include common playbook and dynamic environment variables
+      include_tasks: ../dynamic-assignments/env-vars.yml
+      tags:
+        - always
 
 - name: Import common configuration
-  import_playbook: ../static-assignments/common.yml
+  ansible.builtin.import_playbook: ../static-assignments/common.yml
 
 - name: Import UAT webserver configuration 
   import_playbook: ../static-assignments/uat-webservers.yml
@@ -19,4 +24,4 @@
 
 - name: Loadbalancers assignment
   import_playbook: ../static-assignments/loadbalancers.yml
-  when: load_balancer_is_required
+  when: load_balancer_is_required 

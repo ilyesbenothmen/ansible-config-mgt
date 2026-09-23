@@ -45,3 +45,55 @@
     name: "{{ apache_service }}"
     state: "{{ apache_state }}"
     enabled: "{{ apache_enabled }}"
+
+- name: Configure Apache as Load Balancer
+  block:
+    - name: Enable required proxy modules (Debian/Ubuntu)
+      command: "a2enmod {{ item }}"
+      loop:
+        - proxy
+        - proxy_http
+        - proxy_balancer
+        - lbmethod_byrequests
+        - headers
+      notify: restart apache
+      args:
+        creates: "/etc/apache2/mods-enabled/{{ item }}.load"
+      when: ansible_os_family == "Debian"
+
+    - name: Enable required proxy modules (RHEL/CentOS/Amazon)
+      copy:
+        dest: "/etc/httpd/conf.d/proxy.conf"
+        content: |
+          LoadModule proxy_module modules/mod_proxy.so
+          LoadModule proxy_http_module modules/mod_proxy_http.so
+          LoadModule proxy_balancer_module modules/mod_proxy_balancer.so
+          LoadModule lbmethod_byrequests_module modules/mod_lbmethod_byrequests.so
+      notify: restart apache
+      when: ansible_os_family == "RedHat"
+
+    - name: Create load balancer configuration (Debian/Ubuntu)
+      template:
+        src: loadbalancer.conf.j2
+        dest: /etc/apache2/sites-available/loadbalancer.conf
+      notify: restart apache
+      when: ansible_os_family == "Debian"
+
+    - name: Create load balancer configuration (RHEL/CentOS/Amazon)
+      template:
+        src: loadbalancer.conf.j2
+        dest: /etc/httpd/conf.d/loadbalancer.conf
+      notify: restart apache
+      when: ansible_os_family == "RedHat"
+
+    - name: Enable load balancer site (Debian/Ubuntu)
+      command: a2ensite loadbalancer.conf
+      args:
+        creates: /etc/apache2/sites-enabled/loadbalancer.conf
+      notify: restart apache
+      when: ansible_os_family == "Debian"
+
+  when: 
+    - enable_apache_lb | default(false) | bool
+    - load_balancer_is_required | default(false) | bool
+    - inventory_hostname in groups['lb']

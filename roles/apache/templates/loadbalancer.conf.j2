@@ -1,0 +1,27 @@
+# roles/apache/templates/loadbalancer.conf.j2
+<VirtualHost *:80>
+    ServerAdmin webmaster@localhost
+    DocumentRoot /var/www/html
+
+    <Proxy "balancer://uatcluster">
+{% for host in groups['uat-webservers'] %}
+        BalancerMember http://{{ hostvars[host]['ansible_host'] | default(host) }}:80 route={{ host | replace('.', '-') }}
+{% endfor %}
+        ProxySet lbmethod=byrequests
+    </Proxy>
+
+    ProxyPass "/" "balancer://uatcluster/"
+    ProxyPassReverse "/" "balancer://uatcluster/"
+
+    <Location "/balancer-manager">
+        SetHandler balancer-manager
+        Require all granted
+    </Location>
+
+    <Location "/">
+        Require all granted
+    </Location>
+
+    ErrorLog ${APACHE_LOG_DIR}/lb_error.log
+    CustomLog ${APACHE_LOG_DIR}/lb_access.log combined
+</VirtualHost>
