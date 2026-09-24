@@ -1,0 +1,27 @@
+# roles/nginx/templates/loadbalancer.conf.j2
+upstream uatcluster {
+{% for host in groups['uat-webservers'] %}
+    server {{ hostvars[host]['ansible_host'] | default(host) }}:80;
+{% endfor %}
+}
+
+server {
+    listen 80;
+    server_name _;
+
+    location / {
+        proxy_pass http://uatcluster;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        
+        # Add header to show which backend server responded
+        add_header X-Backend-Server $upstream_addr;
+    }
+
+    location /nginx-status {
+        stub_status on;
+        allow all;
+    }
+}

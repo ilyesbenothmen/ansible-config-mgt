@@ -10,8 +10,10 @@
         ProxySet lbmethod=byrequests
     </Proxy>
 
+    ProxyPreserveHost On 
     ProxyPass "/" "balancer://uatcluster/"
     ProxyPassReverse "/" "balancer://uatcluster/"
+
 
     <Location "/balancer-manager">
         SetHandler balancer-manager

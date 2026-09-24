@@ -50,3 +50,42 @@
     name: nginx
     state: "{{ nginx_service_state }}"
     enabled: "{{ nginx_service_enabled }}"
+# =============================================================================
+# LOAD BALANCER CONFIGURATION
+# =============================================================================
+
+- name: Configure Nginx as Load Balancer
+  block:
+    - name: Stop Nginx service
+      service:
+        name: nginx
+        state: stopped
+
+    - name: Remove default site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+
+    - name: Create load balancer configuration
+      template:
+        src: loadbalancer.conf.j2
+        dest: /etc/nginx/sites-available/loadbalancer.conf
+
+    - name: Enable load balancer site
+      file:
+        src: /etc/nginx/sites-available/loadbalancer.conf
+        dest: /etc/nginx/sites-enabled/loadbalancer.conf
+        state: link
+
+    - name: Test Nginx configuration
+      command: nginx -t
+
+    - name: Start Nginx service
+      service:
+        name: nginx
+        state: started
+
+  when:
+    - enable_nginx_lb | default(false) | bool
+    - load_balancer_is_required | default(false) | bool
+    - inventory_hostname in groups['lb']

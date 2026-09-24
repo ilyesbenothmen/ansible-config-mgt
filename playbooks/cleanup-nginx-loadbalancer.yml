@@ -1,0 +1,50 @@
+---
+- name: Cleanup Nginx Load Balancer
+  hosts: lb
+  become: true
+  
+  tasks:
+    - name: Stop Nginx service
+      service:
+        name: nginx
+        state: stopped
+      ignore_errors: true
+
+    - name: Disable and remove load balancer site
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/nginx/sites-enabled/loadbalancer.conf
+        - /etc/nginx/sites-available/loadbalancer.conf
+
+    - name: Remove default site
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      ignore_errors: true
+
+    - name: Remove Nginx packages
+      apt:
+        name:
+          - nginx
+          - nginx-common
+          - nginx-core
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Remove Nginx configuration directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/nginx
+        - /var/log/nginx
+        - /var/cache/nginx
+        - /usr/share/nginx
+
+    - name: Clean package cache
+      apt:
+        autoremove: true
+        autoclean: true

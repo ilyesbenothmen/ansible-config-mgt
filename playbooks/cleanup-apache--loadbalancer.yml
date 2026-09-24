@@ -1,0 +1,60 @@
+---
+- name: Cleanup Apache Load Balancer
+  hosts: lb
+  become: true
+  
+  tasks:
+    - name: Stop Apache service
+      service:
+        name: apache2
+        state: stopped
+      ignore_errors: true
+
+    - name: Disable load balancer site
+      command: a2dissite loadbalancer.conf
+      args:
+        removes: /etc/apache2/sites-enabled/loadbalancer.conf
+      ignore_errors: true
+
+    - name: Remove load balancer configuration file
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apache2/sites-available/loadbalancer.conf
+        - /etc/apache2/sites-enabled/loadbalancer.conf
+
+    - name: Disable proxy modules
+      command: "a2dismod {{ item }}"
+      loop:
+        - proxy
+        - proxy_http
+        - proxy_balancer
+        - lbmethod_byrequests
+        - slotmem_shm
+      ignore_errors: true
+
+    - name: Remove Apache packages
+      apt:
+        name:
+          - apache2
+          - apache2-utils
+          - apache2-bin
+          - apache2-data
+        state: absent
+        purge: true
+        autoremove: true
+
+    - name: Remove Apache configuration directories
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/apache2
+        - /var/log/apache2
+        - /var/www/html
+
+    - name: Clean package cache
+      apt:
+        autoremove: true
+        autoclean: true
