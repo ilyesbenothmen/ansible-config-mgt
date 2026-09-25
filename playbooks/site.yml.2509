@@ -7,12 +7,13 @@
 - name: Import common configuration
   import_playbook: ../static-assignments/common.yml
 
+#- name: Import UAT webserver configuration 
+#  import_playbook: ../static-assignments/uat-webservers.yml
+
 # Set up MySQL on database servers
 - name: Set up MySQL
   hosts: database
   become: true
-  vars_files:
-    - /home/ubuntu/ansible-config-mgt/secrets/mysql.yml
   roles:
     - mysql
 

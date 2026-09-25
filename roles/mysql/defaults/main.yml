@@ -145,7 +145,7 @@ mysql_databases:
 mysql_users:
   - name: webaccess
     host: "172.31.0.%"
-    password: Admin123
+    password: "{{ vault_webaccess_password }}"
     priv: "tooling.*:ALL"
 mysql_disable_log_bin: false
 
