@@ -7,6 +7,9 @@
 - name: Import common configuration
   import_playbook: ../static-assignments/common.yml
 
+- name: Configure webservers
+  import_playbook: ../static-assignments/webservers.yml
+
 # Set up MySQL on database servers
 - name: Set up MySQL
   hosts: database
