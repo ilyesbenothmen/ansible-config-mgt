@@ -4,3 +4,6 @@
 
 [lb]
 172.31.72.41   ansible_ssh_user='ubuntu'
+
+[database]
+testmysql ansible_host=172.31.72.41 ansible_user='ubuntu'

@@ -13,7 +13,7 @@
       changed_when: "'Nothing to do' not in dnf_output.stdout"
 
 - name: update LB server
-  hosts: lb ,db
+  hosts: lb ,database
   remote_user: ubuntu
   become: yes
   become_user: root

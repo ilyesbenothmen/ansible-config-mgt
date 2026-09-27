@@ -1,0 +1,19 @@
+---
+- name: Configure load balancers
+  hosts: lb
+  become: true
+
+  tasks:
+    - name: Configure Nginx load balancer
+      ansible.builtin.include_role:
+        name: nginx
+      when:
+        - load_balancer_is_required | bool
+        - enable_nginx_lb | bool
+
+    - name: Configure Apache load balancer
+      ansible.builtin.include_role:
+        name: apache
+      when:
+        - load_balancer_is_required | bool
+        - enable_apache_lb | bool
