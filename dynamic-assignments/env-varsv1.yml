@@ -1,0 +1,36 @@
+---
+- name: collate variables from env specific file, if it exists
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: looping through list of available files
+      include_vars: "{{ item }}"
+      with_first_found:
+        - files:
+            - dev.yml
+            - stage.yml
+            - prod.yml
+            - uat.yml
+          paths:
+            - "{{ playbook_dir }}/../env-vars"
+      register: env_vars_result      
+      tags:
+        - always
+
+    - name: Show selected inventory and loaded file
+      ansible.builtin.debug:
+        msg: >-
+          Host={{ inventory_hostname }}
+          Inventory={{ inventory_file | basename }}
+          Loaded={{ env_vars_result.results[0].ansible_included_var_files }}
+      tags:
+        - always
+
+    - name: Show selected environment settings
+      ansible.builtin.debug:
+        msg: >-
+          enable_nginx_lb={{ enable_nginx_lb }}
+          enable_apache_lb={{ enable_apache_lb }}
+          load_balancer_is_required={{ load_balancer_is_required }}
+      tags:
+        - always
