@@ -4,7 +4,7 @@
     DocumentRoot /var/www/html
 
     <Proxy "balancer://uatcluster">
-{% for host in groups['uat-webservers'] %}
+{% for host in groups['webservers'] %}
         BalancerMember http://{{ hostvars[host]['ansible_host'] | default(host) }}:80 route={{ host | replace('.', '-') }}
 {% endfor %}
         ProxySet lbmethod=byrequests

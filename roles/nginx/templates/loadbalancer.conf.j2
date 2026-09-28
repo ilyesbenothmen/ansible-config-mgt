@@ -1,6 +1,6 @@
 # roles/nginx/templates/loadbalancer.conf.j2
 upstream uatcluster {
-{% for host in groups['uat-webservers'] %}
+{% for host in groups['webservers'] %}
     server {{ hostvars[host]['ansible_host'] | default(host) }}:80;
 {% endfor %}
 }
