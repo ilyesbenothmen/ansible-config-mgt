@@ -9,3 +9,4 @@
     state: present
     login_unix_socket: /var/run/mysqld/mysqld.sock
   loop: "{{ mysql_users }}"
+  no_log: true
