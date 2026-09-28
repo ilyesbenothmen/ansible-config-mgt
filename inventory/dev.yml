@@ -6,7 +6,7 @@
 172.31.28.168 ansible_ssh_user=ec2-user
 
 [database]
-172.31.16.58 ansible_ssh_user=ubuntu
+172.31.72.41 ansible_ssh_user=ubuntu
 
 [lb]
 172.31.24.59  ansible_ssh_user=ubuntu

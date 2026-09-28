@@ -7,10 +7,14 @@
     ansible_python_interpreter: /usr/bin/python3.9
   become_user: root
   tasks:
-    - name: ensure wireshark is at the latest version
-      ansible.builtin.command: dnf install -y wireshark
-      register: dnf_output
-      changed_when: "'Nothing to do' not in dnf_output.stdout"
+    #- name: ensure wireshark is at the latest version
+    #  ansible.builtin.command: dnf install -y wireshark
+    #  register: dnf_output
+    #  changed_when: "'Nothing to do' not in dnf_output.stdout"
+    - name: Ensure Wireshark is installed
+      ansible.builtin.dnf:
+        name: wireshark
+        state: present
 
 - name: update LB server
   hosts: lb ,database
@@ -21,25 +25,26 @@
     - name: Update apt repo
       apt: 
         update_cache: yes
+        cache_valid_time: 3600
 
     - name: ensure wireshark is at the latest version
       apt:
         name: wireshark
         state: latest
 
-- name: Create /tmp/test directory and empty file
-  hosts: all
-  become: true
+#- name: Create /tmp/test directory and empty file
+#  hosts: all
+#  become: true
 
-  tasks:
-    - name: Ensure /tmp/test directory exists
-      ansible.builtin.file:
-        path: /tmp/test
-        state: directory
-        mode: '0755'
+#  tasks:
+#    - name: Ensure /tmp/test directory exists
+#      ansible.builtin.file:
+#        path: /tmp/test
+#        state: directory
+#        mode: '0755'
 
-    - name: Ensure /tmp/test/test file exists (empty)
-      ansible.builtin.file:
-        path: /tmp/test4
-        state: touch
-        mode: '0644'
+#   - name: Ensure /tmp/test/test file exists (empty)
+#      ansible.builtin.file:
+#        path: /tmp/test4
+#       state: touch
+#        mode: '0644'
