@@ -70,6 +70,7 @@
       template:
         src: loadbalancer.conf.j2
         dest: /etc/nginx/sites-available/loadbalancer.conf
+      notify: Reload Nginx
 
     - name: Enable load balancer site
       file:
@@ -78,12 +79,22 @@
         state: link
 
     - name: Test Nginx configuration
-      command: nginx -t
+      become: true
+      ansible.builtin.command: nginx -t
+      changed_when: false
 
-    - name: Start Nginx service
-      service:
+    - name: Ensure Nginx is running
+      become: true
+      ansible.builtin.service:
         name: nginx
         state: started
+        enabled: true
+    
+    - name: Reload Nginx
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded
 
   when:
     - enable_nginx_lb | default(false) | bool
