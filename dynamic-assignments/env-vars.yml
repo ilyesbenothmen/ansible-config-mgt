@@ -1,16 +1,31 @@
 ---
-- name: collate variables from env specific file, if it exists
+- name: Load variables matching the selected inventory
   hosts: all
+  gather_facts: false
+
   tasks:
-    - name: looping through list of available files
-      include_vars: "{{ item }}"
-      with_first_found:
-        - files:
-            - dev.yml
-            - stage.yml
-            - prod.yml
-            - uat.yml
-          paths:
-            - "{{ playbook_dir }}/../env-vars"
-      tags:
-        - always
+    - name: Validate the inventory filename
+      ansible.builtin.assert:
+        that:
+          - (inventory_file | basename) in ['dev.yml', 'stage.yml', 'uat.yml', 'prod.yml']
+        fail_msg: "Select inventory/dev.yml, stage.yml, uat.yml, or prod.yml."
+
+    - name: Load variables for this host's inventory
+      ansible.builtin.include_vars:
+        file: "{{ playbook_dir }}/../env-vars/{{ inventory_file | basename }}"
+      register: env_vars_result
+
+    - name: Show the selected inventory and loaded file
+      ansible.builtin.debug:
+        msg: >-
+          Host={{ inventory_hostname }}
+          Inventory={{ inventory_file | basename }}
+          Loaded={{ env_vars_result.ansible_included_var_files }}
+
+    - name: Show selected environment settings
+      ansible.builtin.debug:
+        msg: >-
+          Inventory={{ inventory_file | basename }}
+          parameter1={{ param1 }}
+          parameter2={{ param2 }}
+          parameter3={{ param3 }}

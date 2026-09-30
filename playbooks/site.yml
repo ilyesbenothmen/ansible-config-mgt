@@ -1,24 +1,11 @@
 ---
-- hosts: all
-- name: Include dynamic variables 
-  tasks:
-  import_playbook: ../static-assignments/common.yml 
-  include: ../dynamic-assignments/env-vars.yml
+- name: Include dynamic variables
+  import_playbook: ../dynamic-assignments/env-vars.yml
   tags:
     - always
 
--  hosts: webservers
-- name: Webserver assignment
+- name: Import common configuration
+  import_playbook: ../static-assignments/common.yml
+
+- name: Configure webservers
   import_playbook: ../static-assignments/webservers.yml
-#- hosts: all
-#- import_playbook: ../static-assignments/common-del.yml
-
-#- hosts: uat-webservers
-#- import_playbook: ../static-assignments/uat-webservers.yml
-
-# Set up MySQL on database servers
-- name: Set up MySQL
-  hosts: database
-  become: true
-  roles:
-    - mysql
