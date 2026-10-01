@@ -1,8 +1,8 @@
 ---
-- name: update web, nfs 
+- name: update web, nfs
   hosts: webservers, nfs
   remote_user: ec2-user
-  become: yes
+  become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3.9
   become_user: root
@@ -15,17 +15,17 @@
 - name: update LB server
   hosts: lb ,db
   remote_user: ubuntu
-  become: yes
+  become: true
   become_user: root
   tasks:
     - name: Update apt repo
-      apt: 
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
 
     - name: ensure wireshark is at the latest version
-      apt:
+      ansible.builtin.apt:
         name: wireshark
-        state: latest
+        state: present
 
 - name: Create /tmp/test directory and empty file
   hosts: all

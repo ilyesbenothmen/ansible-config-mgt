@@ -1,13 +1,13 @@
 ---
-- name: update web, nfs 
+- name: Update web, nfs
   hosts: webservers, nfs
   remote_user: ec2-user
-  become: yes
+  become: true
   vars:
     ansible_python_interpreter: /usr/bin/python3.9
   become_user: root
   tasks:
-    #- name: ensure wireshark is at the latest version
+    # - name: ensure wireshark is at the latest version
     #  ansible.builtin.command: dnf install -y wireshark
     #  register: dnf_output
     #  changed_when: "'Nothing to do' not in dnf_output.stdout"
@@ -16,23 +16,23 @@
         name: wireshark
         state: present
 
-- name: update LB server
+- name: Update LB server
   hosts: lb ,database
   remote_user: ubuntu
-  become: yes
+  become: true
   become_user: root
   tasks:
     - name: Update apt repo
-      apt: 
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
         cache_valid_time: 3600
 
-    - name: ensure wireshark is at the latest version
-      apt:
+    - name: Ensure wireshark is installed
+      ansible.builtin.apt:
         name: wireshark
-        state: latest
+        state: present
 
-#- name: Create /tmp/test directory and empty file
+# - name: Create /tmp/test directory and empty file
 #  hosts: all
 #  become: true
 

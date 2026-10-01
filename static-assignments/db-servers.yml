@@ -1,5 +1,5 @@
 - hosts: db_servers
-  become: yes
+  become: true
   vars_files:
     - vars/main.yml
   roles:
