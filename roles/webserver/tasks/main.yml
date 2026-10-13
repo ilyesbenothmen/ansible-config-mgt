@@ -1,18 +1,29 @@
 ---
-- name: install apache
-  remote_user: ec2-user
+#- name: install apache
+#  remote_user: ec2-user
+#  become: true
+#  become_user: root
+#  ansible.builtin.yum:
+#    name: "httpd"
+#    state: present
+- name: Install Apache
   become: true
-  become_user: root
-  ansible.builtin.yum:
-    name: "httpd"
+  ansible.builtin.package:
+    name: "{{ ['httpd', 'mod_ssl'] if ansible_facts['os_family'] == 'RedHat' else ['apache2'] }}"
     state: present
 
-- name: install git
-  remote_user: ec2-user
+#- name: install git
+#  remote_user: ec2-user
+#  become: true
+#  become_user: root
+#  ansible.builtin.yum:
+#    name: "git"
+#    state: present
+
+- name: Install Git
   become: true
-  become_user: root
-  ansible.builtin.yum:
-    name: "git"
+  ansible.builtin.package:
+    name: git
     state: present
 
 - name: Ensure web root exists and is writable by ec2-user
@@ -55,13 +66,19 @@
     remote_src: true
     mode: preserve
 
-- name: Start service httpd, if not started
-  remote_user: ec2-user
+#- name: Start service httpd, if not started
+#  remote_user: ec2-user
+#  become: true
+#  become_user: root
+#  ansible.builtin.service:
+#    name: httpd
+#    state: started
+- name: Enable and start Apache
   become: true
-  become_user: root
   ansible.builtin.service:
-    name: httpd
+    name: "{{ 'httpd' if ansible_facts['os_family'] == 'RedHat' else 'apache2' }}"
     state: started
+    enabled: true
 
 - name: recursively remove /var/www/html/html/ directory
   remote_user: ec2-user

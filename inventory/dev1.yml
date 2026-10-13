@@ -1,0 +1,29 @@
+---
+all:
+  children:
+    tooling:
+      hosts:
+        172.30.135.128:
+          ansible_user: ec2-user
+
+    todo:
+      hosts:
+        172.30.135.129:
+          ansible_user: ec2-user
+
+    nginx:
+      hosts:
+        172.30.135.130:
+          ansible_user: ubuntu
+
+    db:
+      hosts:
+        172.29.64.130:
+          ansible_user: ec2-user
+          ansible_python_interpreter: /usr/bin/python3
+
+    redhat:
+      hosts:
+        172.30.135.128:
+        172.30.135.129:
+        172.29.64.130:
