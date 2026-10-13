@@ -1,42 +1,100 @@
 pipeline {
-  agent any
-  stages {
-    stage('Building') {
-      steps {
-        script {
-          sh 'echo  "Building Stage"' 
-         }
-      }
+    agent any
+
+    options {
+        timestamps()
     }
 
-    stage('Testing') {
-      steps {
-        script {
-          sh 'echo  "Testing Stage"'
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
         }
-      }
-    }
-    
 
-    stage('Package') {
-       steps {
-                sh 'echo "Package Stage"'
+        stage('Inspect workspace') {
+            steps {
+                sh '''
+                    pwd
+                    find . -maxdepth 3 -type f | sort
+                '''
             }
-    }
+        }
 
-    stage('Deploy') {
-      steps {
-                sh 'echo "Deploy Stage"'
+        stage('Validate DEV inventory') {
+            steps {
+                sh '''
+                    test -f inventory/dev.yml
+                    ansible-inventory -i inventory/dev.yml --graph
+                '''
             }
-    }
+        }
 
-    stage('Clean up') {
-      steps {
-                sh 'echo "Clean up Stage"'
+        stage('Syntax check') {
+            steps {
+                sh '''
+                    ansible-playbook \
+                      --syntax-check \
+                      -i inventory/dev.yml \
+                      playbooks/play.yml
+                '''
             }
-    }
+        }
 
-  }
+        stage('Ansible lint') {
+            steps {
+                sh '''
+                    ansible-lint -t idempotency playbooks/play.yml
+                '''
+            }
+        }
+
+        stage('Deploy DEV webservers (Red Hat)') {
+            steps {
+                ansiblePlaybook(
+                    playbook: 'playbooks/play.yml',
+                    inventory: 'inventory/dev.yml',
+                    credentialsId: 'ansible-webserver-ssh-rhel',
+                    limit: 'webservers',
+                    colorized: true
+                )
+            }
+        }
+
+        stage('Deploy DEV Nginx (Ubuntu)') {
+            steps {
+                ansiblePlaybook(
+                    playbook: 'playbooks/play.yml',
+                    inventory: 'inventory/dev.yml',
+                    credentialsId: 'ansible-webserver-ssh',
+                    limit: 'nginx',
+                    colorized: true
+                )
+            }
+        }
+
+        stage('Verify DEV webservers idempotency') {
+            steps {
+                ansiblePlaybook(
+                    playbook: 'playbooks/play.yml',
+                    inventory: 'inventory/dev.yml',
+                    credentialsId: 'ansible-webserver-ssh-rhel',
+                    limit: 'webservers',
+                    colorized: true
+                )
+            }
+        }
+
+        stage('Verify DEV Nginx idempotency') {
+            steps {
+                ansiblePlaybook(
+                    playbook: 'playbooks/play.yml',
+                    inventory: 'inventory/dev.yml',
+                    credentialsId: 'ansible-webserver-ssh',
+                    limit: 'nginx',
+                    colorized: true
+                )
+            }
+        }
+    }
 }
-    
-  

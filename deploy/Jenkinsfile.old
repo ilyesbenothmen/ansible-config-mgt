@@ -1,0 +1,42 @@
+pipeline {
+  agent any
+  stages {
+    stage('Building') {
+      steps {
+        script {
+          sh 'echo  "Building Stage"' 
+         }
+      }
+    }
+
+    stage('Testing') {
+      steps {
+        script {
+          sh 'echo  "Testing Stage"'
+        }
+      }
+    }
+    
+
+    stage('Package') {
+       steps {
+                sh 'echo "Package Stage"'
+            }
+    }
+
+    stage('Deploy') {
+      steps {
+                sh 'echo "Deploy Stage"'
+            }
+    }
+
+    stage('Clean up') {
+      steps {
+                sh 'echo "Clean up Stage"'
+            }
+    }
+
+  }
+}
+    
+  
