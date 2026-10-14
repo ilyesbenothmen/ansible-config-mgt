@@ -7,6 +7,10 @@
 #    name: "httpd"
 #    state: present
 - name: Install Apache
+  tags:
+    - webservers
+    - apache
+
   become: true
   ansible.builtin.package:
     name: "{{ ['httpd', 'mod_ssl'] if ansible_facts['os_family'] == 'RedHat' else ['apache2'] }}"
@@ -52,6 +56,11 @@
 
 - name: Clone tooling outside the web root
   become: true
+  tags:
+    - webservers
+    - apache
+    - content
+
   become_user: "{{ tooling_user }}"
   ansible.builtin.git:
     repo: https://github.com/ilyesbenothmen/tooling.git

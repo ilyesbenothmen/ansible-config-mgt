@@ -6,6 +6,9 @@
 
 - name: Configure webservers
   import_playbook: ../static-assignments/webservers.yml
+  tags:
+    - webservers
+    - apache
 
 - name: Loadbalancers assignment
   import_playbook: ../static-assignments/loadbalancers.yml
