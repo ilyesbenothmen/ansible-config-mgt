@@ -56,7 +56,7 @@
   ansible.builtin.git:
     repo: https://github.com/ilyesbenothmen/tooling.git
     dest: "/home/{{ tooling_user }}/tooling"
-    version: jenkins-ansible-play
+    version: main  # noqa: latest
 
 - name: Publish tooling website files
   become: true
