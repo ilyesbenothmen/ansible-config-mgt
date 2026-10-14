@@ -2,7 +2,7 @@
 - name: Cleanup Apache Load Balancer
   hosts: lb
   become: true
-  
+
   tasks:
     - name: Stop Apache service
       service:

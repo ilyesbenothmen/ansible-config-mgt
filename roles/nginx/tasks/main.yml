@@ -90,13 +90,11 @@
         name: nginx
         state: started
         enabled: true
-    
    # - name: Reload Nginx
    #   become: true
    #   ansible.builtin.service:
    #     name: nginx
    #     state: reloaded
-
   when:
     - enable_nginx_lb | default(false) | bool
     - load_balancer_is_required | default(false) | bool

@@ -2,7 +2,7 @@
 - name: Cleanup Nginx Load Balancer
   hosts: lb
   become: true
-  
+
   tasks:
     - name: Stop Nginx service
       service:
