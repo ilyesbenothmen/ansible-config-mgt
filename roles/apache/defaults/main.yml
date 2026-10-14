@@ -56,7 +56,7 @@ apache_state: started
 apache_enabled: true
 
 enable_apache_lb: false
-load_balancer_is_required : false
+load_balancer_is_required: false
 # Set apache state when configuration changes are made. Recommended values:
 # `restarted` or `reloaded`
 apache_restart_state: restarted

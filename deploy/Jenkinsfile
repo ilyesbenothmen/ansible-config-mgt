@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git(
-                    branch: 'main',
+                    branch: 'jenkins-ansible-play',
                     url: 'https://github.com/ilyesbenothmen/ansible-config-mgt.git'
                 )
             }
