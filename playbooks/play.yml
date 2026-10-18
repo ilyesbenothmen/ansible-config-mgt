@@ -4,6 +4,9 @@
   tags:
     - always
 
+- name: Application todo installation
+  import_playbook: ../static-assignments/deployment.yml
+
 - name: Configure webservers
   import_playbook: ../static-assignments/webservers.yml
   tags:
@@ -14,5 +17,4 @@
   import_playbook: ../static-assignments/loadbalancers.yml
   when: load_balancer_is_required
 
-- name: Application todo installation
-  import_playbook: ../static-assignments/deployment.yml
+
