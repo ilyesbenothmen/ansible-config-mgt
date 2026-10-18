@@ -31,6 +31,12 @@
           - unzip
         state: present
         update_cache: true
+    - name: Install PHP and PHP-FPM
+      ansible.builtin.dnf:
+        name:
+          - php
+          - php-fpm
+        state: present
 
     - name: Ensure Apache is started and enabled
       ansible.builtin.service:
