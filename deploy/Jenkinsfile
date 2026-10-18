@@ -24,7 +24,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git(
-                    branch: 'jenkins-ansible-play',
+                    branch: 'main',
                     url: 'https://github.com/ilyesbenothmen/ansible-config-mgt.git'
                 )
             }
