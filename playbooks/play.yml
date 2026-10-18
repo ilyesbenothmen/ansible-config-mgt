@@ -7,14 +7,4 @@
 - name: Application todo installation
   import_playbook: ../static-assignments/deployment.yml
 
-- name: Configure webservers
-  import_playbook: ../static-assignments/webservers.yml
-  tags:
-    - webservers
-    - apache
-
-- name: Loadbalancers assignment
-  import_playbook: ../static-assignments/loadbalancers.yml
-  when: load_balancer_is_required
-
 
