@@ -15,5 +15,4 @@
 
 - name: Application todo installation and deploy
   import_playbook: ../static-assignments/deployment.yml
-
-
+  
