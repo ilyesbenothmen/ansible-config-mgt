@@ -3,7 +3,7 @@
   import_playbook: ../dynamic-assignments/env-vars.yml
   tags:
     - always
-    
+
 - name: Configure webservers
   import_playbook: ../static-assignments/webservers.yml
   tags:
@@ -16,3 +16,4 @@
 
 - name: Application todo installation and deploy
   import_playbook: ../static-assignments/deployment.yml
+  
