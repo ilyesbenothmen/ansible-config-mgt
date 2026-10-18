@@ -10,6 +10,9 @@
     web_root: "/var/www/html"
 
   tasks:
+    - name: Confirm todo host is selected
+      ansible.builtin.debug:
+        msg: "Running on {{ inventory_hostname }}"
     - name: Install Apache HTTP Server and required packages
       ansible.builtin.dnf:
         name:
