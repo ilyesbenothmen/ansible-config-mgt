@@ -1,0 +1,87 @@
+---
+- name: Deploy the PHP Application to Dev Environment
+  become: true
+  hosts: todo
+
+  vars:
+    artifactory_url: "http://192.168.1.22:8082/artifactory/php-todo-local/php-todo/33/php-todo.zip"
+    app_archive: "/home/ec2-user/php-todo.zip"
+    app_extract_dir: "/home/ec2-user/php-todo-app"
+    web_root: "/var/www/html"
+
+  tasks:
+    - name: Install Apache HTTP Server and required packages
+      ansible.builtin.dnf:
+        name:
+          - httpd
+          - php
+          - php-mysqlnd
+          - php-gd
+          - php-curl
+          - php-common
+          - php-mbstring
+          - php-opcache
+          - php-intl
+          - php-xml
+          - php-fpm
+          - php-json
+          - unzip
+        state: present
+        update_cache: true
+
+    - name: Ensure Apache is started and enabled
+      ansible.builtin.service:
+        name: httpd
+        state: started
+        enabled: true
+
+    - name: Ensure PHP-FPM is started and enabled
+      ansible.builtin.service:
+        name: php-fpm
+        state: started
+        enabled: true
+
+    - name: Download application artifact from Artifactory
+      ansible.builtin.get_url:
+        url: "{{ artifactory_url }}"
+        dest: "{{ app_archive }}"
+        mode: "0644"
+        url_username: "{{ artifactory_username }}"
+        url_password: "{{ artifactory_password }}"
+
+    - name: Create application staging directory
+      ansible.builtin.file:
+        path: "{{ app_extract_dir }}"
+        state: directory
+        owner: ec2-user
+        group: ec2-user
+        mode: "0755"
+
+    - name: Extract application archive
+      ansible.builtin.unarchive:
+        src: "{{ app_archive }}"
+        dest: "{{ app_extract_dir }}"
+        remote_src: true
+
+    - name: Deploy application files to web root
+      ansible.builtin.copy:
+        src: "{{ app_extract_dir }}/"
+        dest: "{{ web_root }}/"
+        owner: apache
+        group: apache
+        mode: "0755"
+        force: true
+        remote_src: true
+
+    - name: Remove Apache welcome page
+      ansible.builtin.file:
+        path: /etc/httpd/conf.d/welcome.conf
+        state: absent
+      notify:
+        - Restart Apache
+
+  handlers:
+    - name: Restart Apache
+      ansible.builtin.service:
+        name: httpd
+        state: restarted
