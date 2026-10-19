@@ -1,31 +1,18 @@
-all:
-  children:
-    todo:
-      hosts:
-        todo:
-          ansible_host: 192.168.1.18
-          ansible_user: ec2-user
+#[nfs]
+#172.31.25.53  ansible_ssh_user=ec2-user
 
-    tooling:
-      hosts:
-        tooling:
-          ansible_host: 172.30.135.128
-          ansible_user: ec2-user
+[tooling]
+172.30.135.128 ansible_ssh_user=ec2-user
 
-    nginx:
-      hosts:
-        nginx:
-          ansible_host: 172.30.135.130
-          ansible_user: ec2-user
-    db:
-      hosts:
-        172.29.64.5:
-      vars:
-        ansible_user: ec2-user
-        ansible_python_interpreter: /usr/bin/python3
+[todo]
+192.168.1.18 ansible_ssh_user=ec2-user
 
-          #webservers:
-          #children:
-          #todo:
-          #tooling:
-          #nginx:
+[nginx]
+172.30.135.130  ansible_ssh_user=ubuntu
+
+[db:vars]
+ansible_ssh_user=ec2-user
+ansible_python_interpreter=/usr/bin/python3
+
+[db]
+172.29.64.5
