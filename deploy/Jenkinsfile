@@ -127,6 +127,7 @@ pipeline {
                     playbook: 'playbooks/play.yml',
                     inventory: "${env.INVENTORY_FILE}",
                     credentialsId: 'ansible-webserver-ssh-rhel',
+                    vaultCredentialsId: 'ansible-vault-password',
                     limit: 'todo',
                     colorized: true
                 )
