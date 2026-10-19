@@ -52,6 +52,7 @@ pipeline {
                     credentialsId: 'ansible-webserver-ssh',
                     hosts: 'webservers',
                     module: 'ansible.builtin.command',
+                    vaultCredentialsId: 'ansible-vault-password',
                     moduleArguments: 'whoami'
                 )
             }
