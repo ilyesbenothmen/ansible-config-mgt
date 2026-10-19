@@ -16,3 +16,8 @@ ansible_python_interpreter=/usr/bin/python3
 
 [db]
 172.29.64.5
+
+[webservers:children]
+tooling
+todo
+nginx
