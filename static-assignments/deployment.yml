@@ -4,7 +4,7 @@
   hosts: todo
 
 #  vars:
-#    artifactory_url: "http://192.168.1.22:8082/artifactory/php-todo-local/php-todo/33/php-todo.zip"
+#    artifactory_url: "http://192.168.1.137:8082/artifactory/php-todo-local/php-todo/33/php-todo.zip"
 #    app_archive: "/home/ec2-user/php-todo.zip"
 #    app_extract_dir: "/home/ec2-user/php-todo-app"
 #    web_root: "/var/www/html"
