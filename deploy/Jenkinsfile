@@ -49,7 +49,7 @@ pipeline {
             steps {
                 ansibleAdhoc(
                     inventory: "${env.INVENTORY_FILE}",
-                    credentialsId: 'ansible-webserver-ssh',
+                    credentialsId: 'ansible-webserver-ssh-rhel',
                     hosts: 'webservers',
                     module: 'ansible.builtin.command',
                     vaultCredentialsId: 'ansible-vault-password',
