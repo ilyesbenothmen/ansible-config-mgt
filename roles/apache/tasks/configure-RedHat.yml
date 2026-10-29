@@ -47,8 +47,16 @@
   register: localhost_cert
   when: ansible_facts.distribution_major_version | int >= 8
 
-- name: Ensure httpd certs are installed (RHEL 8 and later).
-  command: /usr/libexec/httpd-ssl-gencerts
-  when:
-    - ansible_facts.distribution_major_version | int >= 8
-    - not localhost_cert.stat.exists
+#- name: Ensure httpd certs are installed (RHEL 8 and later).
+#  command: /usr/libexec/httpd-ssl-gencerts
+#  when:
+#    - ansible_facts.distribution_major_version | int >= 8
+#    - not localhost_cert.stat.exists
+
+- name: Ensure httpd certs are installed (RHEL 8 and later)
+  ansible.builtin.copy:
+    src: /etc/pki/tls/certs/localhost.crt
+    dest: /etc/httpd/ssl/localhost.crt
+    remote_src: true
+    mode: "0644"
+  notify: restart httpd
