@@ -3,7 +3,7 @@ pipeline {
     agent { label '!built-in' }
     environment {
         ENVIRONMENT = "${params.inventory}"
-        INVENTORY_FILE = "inventory/${params.inventory}"
+        INVENTORY_FILE = "inventory/${params.inventory}.yml"
     }
 
     options {
@@ -54,7 +54,7 @@ pipeline {
                     env.INVENTORY_FILE = "inventory/${params.inventory}.yml"
                 }
 
-                echo "Selected environment: ${params.inventory}"
+                echo "Selected environment: ${params.inventory}.yml"
                 echo "Selected inventory: ${env.INVENTORY_FILE}"
 
                 sh '''
@@ -63,6 +63,7 @@ pipeline {
                 '''
             }
         }
+
         stage('Connectivity and remote user') {
             steps {
                 ansibleAdhoc(
