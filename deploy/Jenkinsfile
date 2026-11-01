@@ -1,6 +1,11 @@
 pipeline {
     /*agent any */
     agent { label '!built-in' }
+    environment {
+        ENVIRONMENT = "${params.inventory}"
+        INVENTORY_FILE = "inventory/${params.inventory}"
+    }
+
     options {
         timestamps()
     }
@@ -16,11 +21,13 @@ pipeline {
             defaultValue: 'apache',
             description: 'Comma-separated Ansible tags to run (e.g. install,service,content,apache). Leave as "apache" for full deployment.'
         )
+        /*
         string(
             name: 'env',
             defaultValue: 'dev',
             description: 'Target environment passed to Ansible.'
         )
+        */
 
         string(
             name: 'app_build_number',
@@ -139,7 +146,8 @@ pipeline {
                     playbook: 'playbooks/play.yml',
                     inventory: "${env.INVENTORY_FILE}",
                     extraVars: [
-                        env: params.env,
+                        /*env: params.env,*/
+                        env: "${env.ENVIRONMENT}",
                         app_build_number: params.app_build_number
                     ],
                     credentialsId: 'ansible-webserver-ssh-rhel',
@@ -157,7 +165,8 @@ pipeline {
                     playbook: 'playbooks/play.yml',
                     inventory: "${env.INVENTORY_FILE}",
                     extraVars: [
-                        env: params.env,
+                        /*env: params.env,*/
+                        env: "${env.ENVIRONMENT}",
                         app_build_number: params.app_build_number
                     ],
                     credentialsId: 'ansible-webserver-ssh',
